@@ -1,0 +1,134 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Mapple V4",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Mapple V4",
+   LoadingSubtitle = "Universal Script 📌",
+   Theme = "Serenity", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true,
+   },
+
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Mapple V4 | Key",
+      Subtitle = "Powered By Rayfield",
+      Note = "",
+      FileName = "MV4_KEY",
+      SaveKey = true,
+      GrabKeyFromSite = true,
+      Key = {"https://raw.githubusercontent.com/Maz0224/MappleV4/refs/heads/main/key"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+--BOOLS--
+getgenv().TPPlace = "string"
+
+--FUNCTIONS--
+
+function Teleport(teleportPlace)
+    local player = game.Players.LocalPlayer
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = teleportPlace
+    else
+        warn("Teleport failed: HumanoidRootPart not found.")
+    end
+end
+
+
+
+--HomeTab--
+
+local HomeTab = Window:CreateTab("Home 🏠", nil) -- Title, Image
+local Section = HomeTab:CreateSection("Player")
+
+local Slider = HomeTab:CreateSlider({
+   Name = "Player Speed",
+   Range = {0, 499},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 36,
+   Flag = "Slider1", 
+   Callback = function(Value)
+ game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
+})
+
+local Slider = HomeTab:CreateSlider({
+   Name = "Player Jump",
+   Range = {0, 499},
+   Increment = 1,
+   Suffix = "Jump",
+   CurrentValue = 50,
+   Flag = "Slider1", 
+   Callback = function(Value)
+ game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+   end,
+})
+
+local Section = HomeTab:CreateSection("Misc")
+
+local Button = HomeTab:CreateButton({
+   Name = "Destroy GUI",
+   Callback = function()
+        Rayfield:Destroy()
+   end,
+})
+
+--GAMES--
+
+local JengaTab = Window:CreateTab("Jenga 🎮", nil) -- Title, Image
+local Section = JengaTab:CreateSection("Tower")
+
+--TOWER
+local Button = JengaTab:CreateButton({
+   Name = "Instant Win (Tower)",
+   Callback = function()
+    Teleport(game:GetService("Workspace").Map.Classic.Button.CFrame)
+   end,
+})
+
+local Button = JengaTab:CreateButton({
+   Name = "Teleport To Shooter",
+   Callback = function()
+    Teleport(game:GetService("Workspace").Map.Classic.Shooter.PARTSPAWNAREA.CFrame)
+   end,
+})
+
+local Section = JengaTab:CreateSection("Destroyer")
+
+--DESTROYER
+local Button = JengaTab:CreateButton({
+   Name = "Make Tower 0.5 Transparency",
+   Callback = function()
+   local tower = game.Workspace:FindFirstChild("Map") and game.Workspace.Map:FindFirstChild("Classic") and game.Workspace.Map.Classic:FindFirstChild("Tower")
+
+if tower then
+    for _, part in ipairs(tower:GetDescendants()) do
+        if part:IsA("BasePart") and string.sub(part.Name, 1, 9) == "JengaPart" then
+            part.Transparency = 0.5
+        end
+    end
+else
+    Rayfield:Notify({
+   Title = "Tower not found.",
+   Content = "Ensure the round has started.",
+   Duration = 3,
+   Image = 4483362458,
+})
+end
+   end,
+})
