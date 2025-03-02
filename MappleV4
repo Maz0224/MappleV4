@@ -12,33 +12,36 @@ local Window = Rayfield:CreateWindow({
 
    ConfigurationSaving = {
       Enabled = false,
-      FolderName = nil,
+      FolderName = nil, -- Create a custom folder for your hub/game
       FileName = "Big Hub"
    },
 
    Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true,
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
    },
 
    KeySystem = true, -- Set this to true to use our key system
    KeySettings = {
       Title = "Mapple V4 | Key",
       Subtitle = "Powered By Rayfield",
-      Note = "",
-      FileName = "MV4_KEY",
-      SaveKey = true,
-      GrabKeyFromSite = true,
+      Note = "", -- Use this to tell the user how to get a key
+      FileName = "MV4_KEY", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
       Key = {"https://raw.githubusercontent.com/Maz0224/MappleV4/refs/heads/main/key"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
    }
 })
 
---BOOLS--
+--STRINGS--
 getgenv().TPPlace = "string"
 
---FUNCTIONS--
+--BOOLS--
+_G.autoeat = true
+_G.autograb = true
 
+--FUNCTIONS--
 function Teleport(teleportPlace)
     local player = game.Players.LocalPlayer
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -47,12 +50,33 @@ function Teleport(teleportPlace)
         warn("Teleport failed: HumanoidRootPart not found.")
     end
 end
+----------
+function AutoEat()
+    while _G.autoeat == true do
+        local args = {
+    [1] = workspace:WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("Events", 9e9):WaitForChild("Eat", 9e9);
+}
+workspace:WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("Events", 9e9):WaitForChild("Eat", 9e9):FireServer(unpack(args))
+        wait(0.0000001)
+    end
+end
+----------
+function AutoGrab()
+    while _G.autograb == true do
+        local args = {
+    [1] = workspace:WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("Events", 9e9):WaitForChild("Grab", 9e9);
+    [2] = false;
+    [3] = false;
+}
 
-
+workspace:WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("Events", 9e9):WaitForChild("Grab", 9e9):FireServer(unpack(args))
+        wait(2.8)
+    end
+end
 
 --HomeTab--
-
 local HomeTab = Window:CreateTab("Home 🏠", nil) -- Title, Image
+
 local Section = HomeTab:CreateSection("Player")
 
 local Slider = HomeTab:CreateSlider({
@@ -73,7 +97,7 @@ local Slider = HomeTab:CreateSlider({
    Increment = 1,
    Suffix = "Jump",
    CurrentValue = 50,
-   Flag = "Slider1", 
+   Flag = "Slider2", 
    Callback = function(Value)
  game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
    end,
@@ -88,12 +112,10 @@ local Button = HomeTab:CreateButton({
    end,
 })
 
---GAMES--
-
+--Blocks n' Props--
 local JengaTab = Window:CreateTab("Jenga 🎮", nil) -- Title, Image
-local Section = JengaTab:CreateSection("Tower")
+local Section = JengaTab:CreateSection("Players")
 
---TOWER
 local Button = JengaTab:CreateButton({
    Name = "Instant Win (Tower)",
    Callback = function()
@@ -108,27 +130,42 @@ local Button = JengaTab:CreateButton({
    end,
 })
 
-local Section = JengaTab:CreateSection("Destroyer")
-
---DESTROYER
 local Button = JengaTab:CreateButton({
-   Name = "Make Tower 0.5 Transparency",
+   Name = "Tower Transparency 0.5",
    Callback = function()
-   local tower = game.Workspace:FindFirstChild("Map") and game.Workspace.Map:FindFirstChild("Classic") and game.Workspace.Map.Classic:FindFirstChild("Tower")
-
-if tower then
-    for _, part in ipairs(tower:GetDescendants()) do
-        if part:IsA("BasePart") and string.sub(part.Name, 1, 9) == "JengaPart" then
-            part.Transparency = 0.5
-        end
-    end
-else
-    Rayfield:Notify({
-   Title = "Tower not found.",
-   Content = "Ensure the round has started.",
-   Duration = 3,
-   Image = 4483362458,
+       local tower = game.Workspace:FindFirstChild("Map") and game.Workspace.Map:FindFirstChild("Classic") and game.Workspace.Map.Classic:FindFirstChild("Tower")
+       if tower then
+           for _, part in ipairs(tower:GetDescendants()) do
+               if part:IsA("BasePart") and part.Name:match("^JengaPart") then
+                   part.Transparency = 0.5
+               end
+           end
+       else
+           warn("Tower not found!")
+       end
+   end,
 })
-end
+
+--Eat The World--
+local EatTWTab = Window:CreateTab("Eat The World 🎮", nil) -- Title, Image
+local Section = EatTWTab:CreateSection("Auto...")
+
+local Toggle = EatTWTab:CreateToggle({
+   Name = "Auto Eat",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        _G.autoeat = Value
+            AutoEat()
+   end,
+})
+
+local Toggle = EatTWTab:CreateToggle({
+   Name = "Auto Grab",
+   CurrentValue = false,
+   Flag = "Toggle2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        _G.autograb = Value
+            AutoGrab()
    end,
 })
