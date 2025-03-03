@@ -40,6 +40,7 @@ getgenv().TPPlace = "string"
 --BOOLS--
 _G.autoeat = true
 _G.autograb = true
+_G.autofarmBab = true
 
 --FUNCTIONS--
 function Teleport(teleportPlace)
@@ -73,6 +74,34 @@ workspace:WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("Events"
         wait(2.8)
     end
 end
+----------
+function autofarmBuild()
+    while _G.autofarmBab == true do
+          	Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage1.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage2.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage3.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage4.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage5.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage6.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage7.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage8.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage9.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.CaveStage10.DarknessPart.CFrame)
+            wait(.3)
+            Teleport(game:GetService("Workspace").BoatStages.NormalStages.TheEnd.GoldenChest.Cap.Hinge.Part.CFrame)
+            wait(15)
+    end
+end
+----------
 
 --HomeTab--
 local HomeTab = Window:CreateTab("Home 🏠", nil) -- Title, Image
@@ -124,11 +153,13 @@ local Button = JengaTab:CreateButton({
 })
 
 local Button = JengaTab:CreateButton({
-   Name = "Teleport To Shooter",
+   Name = "Teleport To Destroyer",
    Callback = function()
     Teleport(game:GetService("Workspace").Map.Classic.Shooter.PARTSPAWNAREA.CFrame)
    end,
 })
+
+local Section = JengaTab:CreateSection("Destroyer")
 
 local Button = JengaTab:CreateButton({
    Name = "Tower Transparency 0.5",
@@ -167,5 +198,19 @@ local Toggle = EatTWTab:CreateToggle({
    Callback = function(Value)
         _G.autograb = Value
             AutoGrab()
+   end,
+})
+
+--Build A Boat--
+local BabTab = Window:CreateTab("Build A Boat 🎮", nil) -- Title, Image
+local Section = BabTab:CreateSection("Auto Farm")
+
+local Toggle = BabTab:CreateToggle({
+   Name = "Auto Farm",
+   CurrentValue = false,
+   Flag = "Toggle3", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   _G.autofarmBab = Value
+        autofarmBuild()
    end,
 })
